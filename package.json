@@ -3,9 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "build": "cd server && npm i && cd ../client && npm i && npm run build",
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "engines": {
+    "node": "your-node-version"
+  }
 }
