@@ -3,7 +3,7 @@ import fs from "fs";
 export default function writeLog(message, logFileName) {
   const logMessage = `${new Date().toISOString()} - ${message}\n`;
   fs.appendFileSync(
-    new URL(`../logs/${logFileName}`, import.meta.url),
+    new URL(`../../logs/${logFileName}`, import.meta.url),
     logMessage,
     "utf8",
   );
