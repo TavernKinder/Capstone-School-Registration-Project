@@ -18,6 +18,9 @@ function initializeServer() {
   const logsDir = path.resolve(__dirname, "../logs");
   if (!fs.existsSync(logsDir)) {
     fs.mkdirSync(logsDir);
+  } else {
+    writeLog(`Logs directory already exists at ${logsDir}`, "server.log");
+    console.log(`Logs directory already exists at ${logsDir}`);
   }
   //Start Server
   app.listen(PORT, () => {
