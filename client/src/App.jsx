@@ -1,8 +1,6 @@
 // client/src/App.jsx
 
 import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
 import "/src/App.css";
 
 // Updated mock data for available courses with prefixed codes and visuals
