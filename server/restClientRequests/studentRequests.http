@@ -1,0 +1,48 @@
+### Invalid Student Login
+POST http://localhost:3001/api/login/student
+Content-Type: application/json
+
+{
+  "email": "student@example.com",
+  "password": "password123"
+}
+
+### Valid Student Login
+# @name studentLogin
+POST http://localhost:3001/api/login/student
+Content-Type: application/json
+
+{
+  "email": "alice.johnson@school.edu",
+  "password": "Passw0rd!"
+}
+
+### Get My Info with invalid Token
+GET http://localhost:3001/api/private/my-info
+Authorization: Bearer {{this is an invalid token}}
+
+### Get My Info with valid Token
+GET http://localhost:3001/api/private/my-info
+Authorization: Bearer {{studentLogin.response.body.token}}
+
+### Change Phone Number with invalid Token
+POST http://localhost:3001/api/private/my-info
+Authorization: Bearer {{this is an invalid token}}
+Content-Type: application/json
+
+{
+  "phone_number": "555-123-9000"
+}
+
+### Change Phone Number with valid Token
+POST http://localhost:3001/api/private/my-info
+Authorization: Bearer {{studentLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "phone_number": "555-123-9000"
+}
+
+### Logout
+POST http://localhost:3001/api/logout
+Authorization: Bearer {{studentLogin.response.body.token}}

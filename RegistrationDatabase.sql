@@ -10,8 +10,12 @@ CREATE TABLE IF NOT EXISTS courses(
 
 CREATE TABLE IF NOT EXISTS students(
     student_id SERIAL PRIMARY KEY,
+    user_id INT UNIQUE,
+    username VARCHAR(255) UNIQUE NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(25),
+    address TEXT,
     enrolled_cohort_ids INT[],
     first_name VARCHAR(255) NOT NULL,
     middle_name VARCHAR(255),
@@ -21,8 +25,12 @@ CREATE TABLE IF NOT EXISTS students(
 
 CREATE TABLE IF NOT EXISTS staff(
     staff_id SERIAL PRIMARY KEY,
+    user_id INT UNIQUE,
+    username VARCHAR(255) UNIQUE NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(25),
+    address TEXT,
     access_level INT NOT NULL CHECK (access_level BETWEEN 0 AND 3),
     assigned_cohort_ids INT[],
     first_name VARCHAR(255) NOT NULL,
@@ -30,6 +38,15 @@ CREATE TABLE IF NOT EXISTS staff(
     last_name VARCHAR(255) NOT NULL,
     birth_date DATE,
     position VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS users(
+    user_id SERIAL PRIMARY KEY,
+    staff_id INT REFERENCES staff(staff_id),
+    student_id INT REFERENCES students(student_id),
+    CONSTRAINT users_exactly_one_role CHECK (num_nonnulls(staff_id, student_id) = 1),
+    CONSTRAINT users_unique_staff_id UNIQUE (staff_id),
+    CONSTRAINT users_unique_student_id UNIQUE (student_id)
 );
 
 CREATE TABLE IF NOT EXISTS cohorts(
@@ -40,6 +57,12 @@ CREATE TABLE IF NOT EXISTS cohorts(
     ending_date DATE,
     student_ids INT[],
     teacher_ids INT[]
+);
+
+CREATE TABLE IF NOT EXISTS token_blacklist (
+    token TEXT PRIMARY KEY,
+    blacklisted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP
 );
 
 INSERT INTO courses (course_id, course_title, course_description, classroom_number, capacity, credit_hours, tuition_cost) VALUES
@@ -67,19 +90,49 @@ INSERT INTO courses (course_id, course_title, course_description, classroom_numb
 ('CSCI-2400', 'Systems Analysis and Design', 'This course provides an introduction to systems analysis and design (SA&D) techniques and tools. It covers topics such as requirements gathering, system design, prototyping, testing, implementation, and maintenance. Students will learn the fundamentals of SA&D such as project planning, data modeling, process modeling, and system architecture. They will also gain practical experience in the use of software development tools and techniques. Additionally, the course will discuss best practices related to the development of robust, maintainable, and secure systems.', 'LAB-3031', 30, 3, 900.00)
 ON CONFLICT (course_id) DO NOTHING;
 
-INSERT INTO students (student_id, email, password, enrolled_cohort_ids, first_name, middle_name, last_name, birth_date) VALUES
-(1, 'alice.johnson@school.edu', 'Passw0rd!', ARRAY[1,2], 'Alice', NULL, 'Johnson', '2002-03-12'),
-(2, 'ben.carter@school.edu', 'Passw0rd!', ARRAY[1], 'Ben', 'M', 'Carter', '2001-07-21'),
-(3, 'chloe.nguyen@school.edu', 'Passw0rd!', ARRAY[2], 'Chloe', NULL, 'Nguyen', '2003-11-05'),
-(4, 'david.lee@school.edu', 'Passw0rd!', ARRAY[3], 'David', NULL, 'Lee', '2000-01-19'),
-(5, 'emma.smith@school.edu', 'Passw0rd!', ARRAY[3], 'Emma', 'R', 'Smith', '2002-09-28')
+INSERT INTO students (student_id, username, email, password, phone_number, address, enrolled_cohort_ids, first_name, middle_name, last_name, birth_date) VALUES
+(1, 'alice.johnson', 'alice.johnson@school.edu', 'Passw0rd!', '555-0101', '101 Main St, Springfield, ST 12345', ARRAY[1,2], 'Alice', NULL, 'Johnson', '2002-03-12'),
+(2, 'ben.carter', 'ben.carter@school.edu', 'Passw0rd!', '555-0102', '202 Oak Ave, Springfield, ST 12345', ARRAY[1], 'Ben', 'M', 'Carter', '2001-07-21'),
+(3, 'chloe.nguyen', 'chloe.nguyen@school.edu', 'Passw0rd!', '555-0103', '303 Pine Rd, Springfield, ST 12345', ARRAY[2], 'Chloe', NULL, 'Nguyen', '2003-11-05'),
+(4, 'david.lee', 'david.lee@school.edu', 'Passw0rd!', '555-0104', '404 Cedar Ln, Springfield, ST 12345', ARRAY[3], 'David', NULL, 'Lee', '2000-01-19'),
+(5, 'emma.smith', 'emma.smith@school.edu', 'Passw0rd!', '555-0105', '505 Birch Blvd, Springfield, ST 12345', ARRAY[3], 'Emma', 'R', 'Smith', '2002-09-28')
 ON CONFLICT (student_id) DO NOTHING;
 
-INSERT INTO staff (staff_id, email, password, access_level, assigned_cohort_ids, first_name, middle_name, last_name, birth_date, position) VALUES
-(1, 'maya.rivera@school.edu', 'AdminPass1!', 3, ARRAY[1,2,3], 'Maya', NULL, 'Rivera', '1988-04-10', 'Program Director'),
-(2, 'oliver.brown@school.edu', 'TeachPass1!', 2, ARRAY[1,2], 'Oliver', NULL, 'Brown', '1990-08-14', 'Instructor'),
-(3, 'sophia.davis@school.edu', 'Support1!', 1, ARRAY[3], 'Sophia', 'L', 'Davis', '1992-12-02', 'Student Support')
+INSERT INTO staff (staff_id, username, email, password, phone_number, address, access_level, assigned_cohort_ids, first_name, middle_name, last_name, birth_date, position) VALUES
+(1, 'maya.rivera', 'maya.rivera@school.edu', 'AdminPass1!', '555-0201', '10 Faculty Way, Springfield, ST 12345', 3, ARRAY[1,2,3], 'Maya', NULL, 'Rivera', '1988-04-10', 'Program Director'),
+(2, 'oliver.brown', 'oliver.brown@school.edu', 'TeachPass1!', '555-0202', '20 Faculty Way, Springfield, ST 12345', 2, ARRAY[1,2], 'Oliver', NULL, 'Brown', '1990-08-14', 'Instructor'),
+(3, 'sophia.davis', 'sophia.davis@school.edu', 'Support1!', '555-0203', '30 Faculty Way, Springfield, ST 12345', 1, ARRAY[3], 'Sophia', 'L', 'Davis', '1992-12-02', 'Student Support')
 ON CONFLICT (staff_id) DO NOTHING;
+
+INSERT INTO users (student_id)
+SELECT s.student_id
+FROM students s
+WHERE NOT EXISTS (
+    SELECT 1 FROM users u WHERE u.student_id = s.student_id
+);
+
+INSERT INTO users (staff_id)
+SELECT st.staff_id
+FROM staff st
+WHERE NOT EXISTS (
+    SELECT 1 FROM users u WHERE u.staff_id = st.staff_id
+);
+
+UPDATE students s
+SET user_id = u.user_id
+FROM users u
+WHERE u.student_id = s.student_id;
+
+UPDATE staff st
+SET user_id = u.user_id
+FROM users u
+WHERE u.staff_id = st.staff_id;
+
+ALTER TABLE students
+ALTER COLUMN user_id SET NOT NULL;
+
+ALTER TABLE staff
+ALTER COLUMN user_id SET NOT NULL;
 
 INSERT INTO cohorts (cohort_id, course_id, cohort_name, starting_date, ending_date, student_ids, teacher_ids) VALUES
 (1, 'CSCI-1001', 'CSCI-1001 Fall 2026', '2026-09-01', '2026-12-15', ARRAY[1,2], ARRAY[2]),
