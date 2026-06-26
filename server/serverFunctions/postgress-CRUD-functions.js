@@ -10,6 +10,10 @@ const pool = new Pool({
 });
 
 export default {
+  async QUERY(sql, params = []) {
+    const result = await pool.query(sql, params);
+    return result.rows;
+  },
   async CREATE(table, data) {
     return await pool.query(
       `INSERT INTO ${table} (${Object.keys(data).join(", ")}) VALUES (${Object.values(
