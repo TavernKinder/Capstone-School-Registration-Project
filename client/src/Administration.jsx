@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "/src/App.css";
 
 export default function Administration() {
+  const navigate = useNavigate();
+
   return (
     <div className="mtc-dashboard-container" style={{ gridTemplateColumns: '84px 1fr' }}>
       {/* Sidebar Navigation */}
@@ -10,9 +13,37 @@ export default function Administration() {
           <div className="mtc-logo">A</div>
         </div>
         <ul className="nav-links">
-          <li className="active"><i className="fas fa-cogs"></i> System</li>
-          <li><i className="fas fa-users"></i> Users</li>
-          <li><i className="fas fa-book"></i> Catalog</li>
+          <li onClick={() => navigate("/profile")} className="active">
+            <i className="fas fa-user"></i> Profile
+          </li>
+          <li onClick={() => navigate("/about")}>
+            <i className="fas fa-info-circle"></i> About
+          </li>
+          <li onClick={() => navigate("/dashboard")}>
+            <i className="fas fa-tachometer-alt"></i> Dashboard
+          </li>
+          <li onClick={() => navigate("/courses")}>
+            <i className="fas fa-graduation-cap"></i> Courses
+          </li>
+          <li onClick={() => navigate("/calendar")}>
+            <i className="fas fa-calendar-alt"></i> Calendar
+          </li>
+          <li onClick={() => navigate("/inbox")}>
+            <i className="fas fa-inbox"></i> Inbox
+          </li>
+          <li onClick={() => navigate("/history")}>
+            <i className="fas fa-history"></i> History
+          </li>
+          <li onClick={() => navigate("/resources")}>
+            <i className="fas fa-book"></i> Resources
+          </li>
+          <li onClick={() => navigate("/settings")}>
+            <i className="fas fa-cog"></i> Settings
+          </li>
+          <li onClick={() => navigate("/help")}>
+            <i className="fas fa-question-circle"></i> Help
+            <span className="badge">4</span>
+          </li>
         </ul>
       </nav>
 
