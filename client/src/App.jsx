@@ -6,11 +6,46 @@ import "/src/App.css";
 
 // Updated mock data for available courses with prefixed codes and visuals
 const COURSE_CATALOG = [
-  { id: 101, code: 'TEWP 1010', title: 'Introduction to Web Development', banner: '#701D21', visual: '💻', year: '2024-2025' },
-  { id: 102, code: 'TEWP 1020', title: 'JavaScript Programming Fundamentals', banner: '#16a34a', visual: 'IS', year: '2024-2025' },
-  { id: 103, code: 'TEWP 1030', title: 'Advanced React.js Patterns', banner: '#10b981', visual: '⚛️', year: '2024-2025' },
-  { id: 104, code: 'TEWP 1040', title: 'Backend Programming & APIs', banner: '#059669', visual: '🛡️🐘', year: '2024-2025' },
-  { id: 105, code: 'TEWP 1050', title: 'UI/UX Design Fundamentals', banner: '#c2410c', visual: '🎨', year: '2024-2025' },
+  {
+    id: 101,
+    code: "TEWP 1010",
+    title: "Introduction to Web Development",
+    banner: "#701D21",
+    visual: "💻",
+    year: "2024-2025",
+  },
+  {
+    id: 102,
+    code: "TEWP 1020",
+    title: "JavaScript Programming Fundamentals",
+    banner: "#16a34a",
+    visual: "IS",
+    year: "2024-2025",
+  },
+  {
+    id: 103,
+    code: "TEWP 1030",
+    title: "Advanced React.js Patterns",
+    banner: "#10b981",
+    visual: "⚛️",
+    year: "2024-2025",
+  },
+  {
+    id: 104,
+    code: "TEWP 1040",
+    title: "Backend Programming & APIs",
+    banner: "#059669",
+    visual: "🛡️🐘",
+    year: "2024-2025",
+  },
+  {
+    id: 105,
+    code: "TEWP 1050",
+    title: "UI/UX Design Fundamentals",
+    banner: "#c2410c",
+    visual: "🎨",
+    year: "2024-2025",
+  },
 ];
 
 function App() {
@@ -84,29 +119,35 @@ function App() {
 
         <section className="course-grid">
           {COURSE_CATALOG.map((course) => {
-            const isRegistered = registeredCourses.some((c) => c.id === course.id);
-            
+            const isRegistered = registeredCourses.some(
+              (c) => c.id === course.id,
+            );
+
             return (
               <div key={course.id} className="mtc-course-card">
-                <div 
-                  className="card-banner" 
+                <div
+                  className="card-banner"
                   style={{ backgroundColor: course.banner }}
                 >
                   <div className="banner-visual">{course.visual}</div>
                   <i className="fas fa-ellipsis-v banner-kebab"></i>
                 </div>
                 <div className="card-content">
-                  <h3 className="course-title">{course.code} {course.title}</h3>
-                  <p className="course-details">{course.code} {course.title.substring(0, 20)}...</p>
+                  <h3 className="course-title">
+                    {course.code} {course.title}
+                  </h3>
+                  <p className="course-details">
+                    {course.code} {course.title.substring(0, 20)}...
+                  </p>
                   <p className="academic-year">{course.year}</p>
                 </div>
                 {/* Embedded functional button */}
-                <button 
-                  onClick={() => handleRegister(course)} 
+                <button
+                  onClick={() => handleRegister(course)}
                   disabled={isRegistered}
                   className="btn-mtc-register"
                 >
-                  {isRegistered ? 'Enrolled' : 'Register'}
+                  {isRegistered ? "Enrolled" : "Register"}
                 </button>
               </div>
             );
@@ -117,7 +158,11 @@ function App() {
       {/* 3. MTC Right Info Sidebar */}
       <aside className="mtc-right-sidebar">
         <div className="right-header">
-          <img src="https://mtech.edu/wp-content/uploads/2021/08/mtc-logo.png" alt="MTC Logo" className="mtc-full-logo" />
+          <img
+            src="https://mtech.edu/wp-content/uploads/2021/08/mtc-logo.png"
+            alt="MTC Logo"
+            className="mtc-full-logo"
+          />
         </div>
 
         <div className="right-section">
@@ -135,9 +180,11 @@ function App() {
         {/* Integrated My Schedule Section */}
         <div className="right-section my-schedule-section">
           <div className="credit-tracker-header">
-            <span>My Schedule (Credits: <strong>{totalCredits}</strong>)</span>
+            <span>
+              My Schedule (Credits: <strong>{totalCredits}</strong>)
+            </span>
           </div>
-          
+
           {registeredCourses.length === 0 ? (
             <p className="empty-state-text italic">Not registered yet.</p>
           ) : (
@@ -148,8 +195,8 @@ function App() {
                     <h4>{course.code}</h4>
                     <p>{course.year}</p>
                   </div>
-                  <button 
-                    onClick={() => handleDrop(course.id)} 
+                  <button
+                    onClick={() => handleDrop(course.id)}
                     className="btn-danger-sm"
                   >
                     Drop
