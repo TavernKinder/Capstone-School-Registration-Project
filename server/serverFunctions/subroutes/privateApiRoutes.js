@@ -1,7 +1,7 @@
 import express from "express";
-import postgresCRUD from "./postgress-CRUD-functions.js";
-import { authenticateToken } from "./securityFunctions.js";
-import writeLog from "./write-log.js";
+import postgresCRUD from "../postgress-CRUD-functions.js";
+import { authenticateToken, checkRole } from "../securityFunctions.js";
+import writeLog from "../write-log.js";
 
 const privateRoutes = express.Router();
 
@@ -152,5 +152,16 @@ privateRoutes.post("/my-info", async (req, res) => {
     return res.status(500).json({ error: "Failed to update profile" });
   }
 });
+
+privateRoutes.use(
+  "/student",
+  checkRole("student"),
+  (await import("./privateStudent.js")).default,
+);
+privateRoutes.use(
+  "/staff",
+  checkRole("staff"),
+  (await import("./privateStaff.js")).default,
+);
 
 export default privateRoutes;

@@ -63,4 +63,49 @@ export default {
     );
     return result.rows;
   },
+  async signupForCourse(courseId, userId) {
+    const result = await pool.query(
+      `
+      UPDATE courses
+      SET signup_queue = array_append(
+        COALESCE(signup_queue, ARRAY[]::INT[]),
+        (
+          SELECT student_id
+          FROM users
+          WHERE user_id = $2 AND student_id IS NOT NULL
+        )
+      )
+      WHERE course_id = $1
+        AND NOT (
+          (
+            SELECT student_id
+            FROM users
+            WHERE user_id = $2 AND student_id IS NOT NULL
+          ) = ANY(COALESCE(signup_queue, ARRAY[]::INT[]))
+        )
+      RETURNING *
+      `,
+      [courseId, userId],
+    );
+    return result.rows;
+  },
+  async dropCourse(courseId, userId) {
+    const result = await pool.query(
+      `
+      UPDATE courses
+      SET signup_queue = array_remove(
+        COALESCE(signup_queue, ARRAY[]::INT[]),
+        (
+          SELECT student_id
+          FROM users
+          WHERE user_id = $2 AND student_id IS NOT NULL
+        )
+      )
+      WHERE course_id = $1
+      RETURNING *
+      `,
+      [courseId, userId],
+    );
+    return result.rows;
+  }
 };

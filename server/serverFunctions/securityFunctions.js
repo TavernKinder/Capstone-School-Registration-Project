@@ -55,4 +55,42 @@ export async function blacklistToken(token) {
   writeLog(`Token blacklisted: ${token}`, "server.log");
 }
 
-export function checkStaffAccess() {}
+export function checkRole(role) {
+  return (req, res, next) => {
+    if (!req.auth) {
+      return res.status(401).json({ error: "Authentication is required" });
+    }
+
+    if (req.auth.role !== role) {
+      writeLog(
+        `Access denied for user_id=${req.auth.user_id}: role ${req.auth.role} is not allowed`,
+        "server.log",
+      );
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    return next();
+  };
+}
+
+export function checkAccessLevel(accessLevel) {
+  return (req, res, next) => {
+    if (!req.auth) {
+      return res.status(401).json({ error: "Authentication is required" });
+    }
+
+    if (req.auth.access_level < accessLevel) {
+      writeLog(
+        `Access denied for user_id=${req.auth.user_id}: access level ${req.auth.access_level} is insufficient`,
+        "server.log",
+      );
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    return next();
+  };
+}
+
+
+
+

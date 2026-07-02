@@ -1,7 +1,7 @@
 import express from "express";
-import writeLog from "./write-log.js";
-import postgresCRUD from "./postgress-CRUD-functions.js";
-import { authenticateToken } from "./securityFunctions.js";
+import writeLog from "../write-log.js";
+import postgresCRUD from "../postgress-CRUD-functions.js";
+import { authenticateToken } from "../securityFunctions.js";
 
 const adminRoutes = express.Router();
 
