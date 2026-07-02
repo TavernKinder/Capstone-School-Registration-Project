@@ -1,0 +1,60 @@
+### Invalid Staff Login
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "email": "staff@example.com",
+  "password": "password123"
+}
+
+### Valid Staff Login
+# @name staffLogin
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+  "email": "maya.rivera@school.edu",
+  "password": "AdminPass1!"
+}
+
+### Get My Info with invalid Token
+GET http://localhost:3001/api/private/my-info
+Authorization: Bearer {{this is an invalid token}}
+
+### Get My Info with valid Token
+GET http://localhost:3001/api/private/my-info
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Change Phone Number with invalid Token
+POST http://localhost:3001/api/private/my-info
+Authorization: Bearer {{this is an invalid token}}
+Content-Type: application/json
+
+{
+  "phone_number": "555-123-9000"
+}
+
+### Change Phone Number with valid Token
+POST http://localhost:3001/api/private/my-info
+Authorization: Bearer {{staffLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "phone_number": "555-123-9000"
+}
+### Get My Cohorts
+GET http://localhost:3001/api/private/staff/cohorts
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Get the details of a specific cohort the staff is responsible for
+GET http://localhost:3001/api/private/staff/cohorts/1
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Get the details of a specific cohort the staff is not responsible for
+GET http://localhost:3001/api/private/staff/cohorts/3
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+
+### Logout
+POST http://localhost:3001/api/logout
+Authorization: Bearer {{staffLogin.response.body.token}}

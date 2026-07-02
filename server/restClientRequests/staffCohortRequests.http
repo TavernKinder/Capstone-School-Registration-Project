@@ -1,0 +1,98 @@
+### Staff Login
+# @name staffLogin
+POST http://localhost:3001/api/login/staff
+Content-Type: application/json
+
+{
+  "email": "oliver.brown@school.edu",
+  "password": "TeachPass1!"
+}
+
+### Invalid Staff Login
+POST http://localhost:3001/api/login/staff
+Content-Type: application/json
+
+{
+  "email": "oliver.brown@school.edu",
+  "password": "wrong-password"
+}
+
+### Get My Cohorts
+GET http://localhost:3001/api/private/staff/cohorts
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Get My Cohorts (explicit route)
+GET http://localhost:3001/api/private/staff/cohorts/my-cohorts
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Get My Cohorts with invalid token
+GET http://localhost:3001/api/private/staff/cohorts
+Authorization: Bearer this.is.not.a.valid.token
+
+### Get the details of a specific cohort the staff member is responsible for
+GET http://localhost:3001/api/private/staff/cohorts/1
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Get the details of a specific cohort the staff is not responsible for
+GET http://localhost:3001/api/private/staff/cohorts/3
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Get cohort that does not exist
+GET http://localhost:3001/api/private/staff/cohorts/9999
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Create new cohort
+# @name createdCohort
+POST http://localhost:3001/api/private/staff/cohorts
+Authorization: Bearer {{staffLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "course_id": "CSCI-1001",
+  "cohort_name": "Cohort 13",
+  "teacher_ids": [1, 2],
+  "student_ids": [1, 2]
+}
+
+### Create new cohort with invalid token
+POST http://localhost:3001/api/private/staff/cohorts
+Authorization: Bearer this.is.not.a.valid.token
+Content-Type: application/json
+
+{
+  "course_id": 1,
+  "teacher_ids": [1, 2],
+  "cohort_name": "Cohort 13"
+}
+
+### Update specific cohort information
+PUT http://localhost:3001/api/private/staff/cohorts/{{createdCohort.response.body.cohort_id}}
+Authorization: Bearer {{staffLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "course_id": "CSCI-1001",
+  "cohort_name": "Cohort 13 Updated",
+  "teacher_ids": [1, 2],
+  "student_ids": [1, 2]
+}
+
+### Get students from a cohort the staff is responsible for
+GET http://localhost:3001/api/private/staff/cohorts/{{createdCohort.response.body.cohort_id}}/students
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Get specific student in a specific cohort
+GET http://localhost:3001/api/private/staff/cohorts/{{createdCohort.response.body.cohort_id}}/students/1
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Remove student from a cohort the staff is responsible for
+DELETE http://localhost:3001/api/private/staff/cohorts/{{createdCohort.response.body.cohort_id}}/students/1
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Delete specific cohort
+DELETE http://localhost:3001/api/private/staff/cohorts/{{createdCohort.response.body.cohort_id}}
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Logout
+POST http://localhost:3001/api/logout
+Authorization: Bearer {{staffLogin.response.body.token}}

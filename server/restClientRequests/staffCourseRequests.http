@@ -1,0 +1,73 @@
+### Login as staff member
+# @name staffLogin
+POST http://localhost:3001/api/login/staff
+Content-Type: application/json
+
+{
+    "email": "oliver.brown@school.edu",
+    "password": "TeachPass1!"
+}
+
+### Get all courses
+GET http://localhost:3001/api/private/staff/courses
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+
+
+### Create new course
+# @name createdCourse
+POST http://localhost:3001/api/private/staff/courses
+Authorization: Bearer {{staffLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "course_id": "CSCI-8001",
+  "course_name": "Introduction to Biology",
+  "description": "An introductory course to Biology",
+  "capacity": 30
+}
+
+### Get my courses
+GET http://localhost:3001/api/private/staff/courses/my-courses
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Get specific course by ID
+GET http://localhost:3001/api/private/staff/courses/course/{{createdCourse.response.body.course_id}}
+Authorization: Bearer {{staffLogin.response.body.token}}
+
+### Update specific course by ID
+PUT http://localhost:3001/api/private/staff/courses/course/{{createdCourse.response.body.course_id}}
+Authorization: Bearer {{staffLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "course_name": "Introduction to Biology - Updated",
+  "description": "An introductory course to biology, now with more experiments",
+    "credit_hours": 3,
+  "tuition_cost": 1500
+}
+### Create Cohort for created course
+# @name createdCohort
+POST http://localhost:3001/api/private/staff/cohorts
+Authorization: Bearer {{staffLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "course_id": "{{createdCourse.response.body.course_id}}",
+  "cohort_name": "Fall 2024",
+  "starting_date": "2024-09-01",
+  "ending_date": "2024-12-15",
+  "teacher_ids": [{{staffLogin.response.body.staff_id}}]
+}
+### Get my cohort
+GET http://localhost:3001/api/private/staff/cohorts/{{createdCohort.response.body.cohort_id}}
+Authorization: Bearer {{staffLogin.response.body.token}}
+### Delete specific cohort by ID
+DELETE http://localhost:3001/api/private/staff/cohorts/{{createdCohort.response.body.cohort_id}}
+Authorization: Bearer {{staffLogin.response.body.token}}
+### Delete specific course by ID
+DELETE http://localhost:3001/api/private/staff/courses/course/{{createdCourse.response.body.course_id}}
+Authorization: Bearer {{staffLogin.response.body.token}}
+###
+DELETE http://localhost:3001/api/private/staff/courses/course/CSCI-8001
+Authorization: Bearer {{staffLogin.response.body.token}}

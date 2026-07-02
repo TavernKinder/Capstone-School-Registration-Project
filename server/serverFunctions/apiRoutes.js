@@ -9,10 +9,13 @@ router.get("/", (req, res) => {
   writeLog("GET request received at /api", "server.log");
 });
 
-router.use("/public", (await import("./_publicApiRoutes.js")).default);
-router.use("/private", (await import("./_privateApiRoutes.js")).default);
-router.use("/admin", (await import("./_adminApiRoutes.js")).default);
-router.use("/login", (await import("./_loginApiRoutes.js")).default);
+router.use("/public", (await import("./subROutes/publicApiRoutes.js")).default);
+router.use(
+  "/private",
+  (await import("./subROutes/privateApiRoutes.js")).default,
+);
+router.use("/admin", (await import("./subROutes/adminApiRoutes.js")).default);
+router.use("/login", (await import("./subROutes/loginApiRoutes.js")).default);
 router.post("/logout", async (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(" ")[1];
