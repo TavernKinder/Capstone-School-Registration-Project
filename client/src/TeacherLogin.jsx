@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "/src/App.css";
 
 export default function TeacherLogin() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
     console.log("Teacher Login Attempt:", email);
+    // Add authentication logic here
   };
 
   return (
