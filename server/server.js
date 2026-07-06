@@ -10,6 +10,8 @@ dotenv.config();
 const PORT = process.env.PORT || 3001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const clientDistPath = path.resolve(__dirname, "../client/dist");
+const clientIndexPath = path.join(clientDistPath, "index.html");
 
 const app = express();
 
@@ -32,8 +34,16 @@ function initializeServer() {
   });
 }
 
-app.use(express.static(path.resolve(__dirname, "../client/dist")));
 app.use("/api", apiRoutes);
+app.use(express.static(clientDistPath));
+
+// SPA fallback for non-API routes (e.g. /student, /student/courses).
+app.get(/^\/(?!api).*/, (req, res) => {
+  if (!fs.existsSync(clientIndexPath)) {
+    return res.status(404).send("Client build not found. Run npm run build.");
+  }
+  return res.sendFile(clientIndexPath);
+});
 
 /// Run Initialize Server Function ///
 initializeServer();
