@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import writeLog from "./serverFunctions/write-log.js";
-import apiRoutes from "./serverFunctions/apiRoutes.js";
+import apiRoutes from "./routes/apiRoutes.js";
 import dotenv from "dotenv";
 dotenv.config();
 

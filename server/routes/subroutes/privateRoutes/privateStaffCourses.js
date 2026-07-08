@@ -1,6 +1,6 @@
 import express from "express";
-import postgresCRUD from "../postgress-CRUD-functions.js";
-import writeLog from "../write-log.js";
+import postgresCRUD from "../../../serverFunctions/postgress-CRUD-functions.js";
+import writeLog from "../../../serverFunctions/write-log.js";
 import privateStaffCoursesQueue from "./privateStaffCoursesQueue.js";
 
 async function requireCourseManager(req, res, next) {

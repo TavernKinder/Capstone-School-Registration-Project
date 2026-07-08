@@ -1,0 +1,106 @@
+### Login to Level 2 Admin
+# @name adminLevel2Login
+POST http://localhost:3001/api/login/staff
+Content-Type: application/json
+
+{
+	"email": "oliver.brown@school.edu",
+	"password": "TeachPass1!"
+}
+
+### Get admin Level 1 route to check accesibility
+GET http://localhost:3001/api/admin/Level1
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+
+### Get admin Level 2 Route to check accesibility
+GET http://localhost:3001/api/admin/Level2
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+
+### Get admin Level 3 route to check accesibility
+GET http://localhost:3001/api/admin/Level3
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+
+### Get courses
+GET http://localhost:3001/api/admin/Level2/courses
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+
+### Post new Course
+# @name newCourse
+POST http://localhost:3001/api/admin/Level2/courses
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+Content-Type: application/json
+
+{
+	"course_id": "CSCI-2999",
+	"course_title": "Applied Systems Project",
+	"course_description": "Project-based course for end-to-end system implementation.",
+	"classroom_number": "LAB-9999",
+	"capacity": 20,
+	"credit_hours": 3,
+	"tuition_cost": 900.00,
+	"manager_staff_id": 2
+}
+
+### Get newly created Course by ID
+GET http://localhost:3001/api/admin/Level2/courses/{{newCourse.response.body.course_id}}
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+
+### Update newly created Course by ID
+PUT http://localhost:3001/api/admin/Level2/courses/{{newCourse.response.body.course_id}}
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+Content-Type: application/json
+
+{
+	"course_title": "Applied Systems Project - Updated",
+	"course_description": "Updated project-based course description.",
+	"capacity": 25,
+	"credit_hours": 4,
+	"tuition_cost": 1200.00,
+	"manager_staff_id": 2
+}
+
+### Get cohorts
+GET http://localhost:3001/api/admin/Level2/cohorts
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+
+### Post new Cohort with the course id of the created course
+# @name newCohort
+POST http://localhost:3001/api/admin/Level2/cohorts
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+Content-Type: application/json
+
+{
+	"course_id": "{{newCourse.response.body.course_id}}",
+	"cohort_name": "Applied Systems Project - Cohort A",
+	"starting_date": "2026-09-01",
+	"ending_date": "2026-12-15",
+	"teacher_ids": [2],
+	"student_ids": [1, 2]
+}
+
+### Get newly created Cohort by ID
+GET http://localhost:3001/api/admin/Level2/cohorts/{{newCohort.response.body.cohort_id}}
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+
+### Update newly created Cohort by ID
+PUT http://localhost:3001/api/admin/Level2/cohorts/{{newCohort.response.body.cohort_id}}
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+Content-Type: application/json
+
+{
+	"cohort_name": "Applied Systems Project - Cohort A Updated",
+	"ending_date": "2026-12-20",
+	"student_ids": [1, 2, 3]
+}
+
+### Delete newly created Cohort by ID
+DELETE http://localhost:3001/api/admin/Level2/cohorts/{{newCohort.response.body.cohort_id}}
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+
+### Delete newly created Course by ID
+DELETE http://localhost:3001/api/admin/Level2/courses/{{newCourse.response.body.course_id}}
+Authorization: Bearer {{adminLevel2Login.response.body.token}}
+
+### Logout
+POST http://localhost:3001/api/logout
+Authorization: Bearer {{adminLevel2Login.response.body.token}}

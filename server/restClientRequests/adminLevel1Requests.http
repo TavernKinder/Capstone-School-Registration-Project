@@ -1,0 +1,58 @@
+### Login to Level 1 Admin
+# @name adminLevel1Login
+POST http://localhost:3001/api/login/staff
+Content-Type: application/json
+
+{
+	"email": "sophia.davis@school.edu",
+	"password": "Support1!"
+}
+
+### Get admin Level 1 route to check accesibility
+GET http://localhost:3001/api/admin/Level1
+Authorization: Bearer {{adminLevel1Login.response.body.token}}
+
+### Get admin Level 2 Route to check accesibility
+GET http://localhost:3001/api/admin/Level2
+Authorization: Bearer {{adminLevel1Login.response.body.token}}
+
+### Get admin Level 3 route to check accesibility
+GET http://localhost:3001/api/admin/Level3
+Authorization: Bearer {{adminLevel1Login.response.body.token}}
+
+### Get students
+GET http://localhost:3001/api/admin/Level1/students
+Authorization: Bearer {{adminLevel1Login.response.body.token}}
+
+### Post new student account
+# @name newStudent
+POST http://localhost:3001/api/admin/Level1/students
+Authorization: Bearer {{adminLevel1Login.response.body.token}}
+Content-Type: application/json
+
+{
+	"email": "new.student@school.edu",
+	"name": "New Student"
+}
+
+### Get newly created student by ID
+GET http://localhost:3001/api/admin/Level1/students/{{newStudent.response.body.rows[0].student_id}}
+Authorization: Bearer {{adminLevel1Login.response.body.token}}
+
+### Update newly created student by ID
+PUT http://localhost:3001/api/admin/Level1/students/{{newStudent.response.body.rows[0].student_id}}
+Authorization: Bearer {{adminLevel1Login.response.body.token}}
+Content-Type: application/json
+
+{
+	"email": "updated.student@school.edu",
+	"name": "Updated Student"
+}
+
+### Delete newly created student by ID
+DELETE http://localhost:3001/api/admin/Level1/students/{{newStudent.response.body.rows[0].student_id}}
+Authorization: Bearer {{adminLevel1Login.response.body.token}}
+
+### Logout
+POST http://localhost:3001/api/logout
+Authorization: Bearer {{adminLevel1Login.response.body.token}}
