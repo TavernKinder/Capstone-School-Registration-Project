@@ -82,6 +82,7 @@ INSERT INTO token_blacklist (token, expires_at) VALUES
 ('sample_token_1', CURRENT_TIMESTAMP + INTERVAL '1 day'),
 ('sample_token_2', CURRENT_TIMESTAMP + INTERVAL '1 day'),
 ('sample_token_3', CURRENT_TIMESTAMP + INTERVAL '1 day')
+ON CONFLICT (token) DO NOTHING;
 
 INSERT INTO courses (course_id, course_title, course_description, classroom_number, capacity, credit_hours, tuition_cost) VALUES
 ('CSCI-1001', 'Introduction to Computer Science', 'This course will introduce students to the fundamental concepts behind computers and computer programming. Topics covered include basic programming logic, algorithm development, computer architecture, and software engineering.', 'LAB-123', 30, 3, 900.00),
