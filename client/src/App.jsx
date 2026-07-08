@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar.jsx";
+import Sidebar from "./components/Sidebar.jsx";
 import "/src/App.css";
 
 // Updated mock data for available courses with prefixed codes and visuals

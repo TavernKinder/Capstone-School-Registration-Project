@@ -1,6 +1,6 @@
 import express from "express";
-import writeLog from "./write-log.js";
-import postgresCRUD from "./postgress-CRUD-functions.js";
+import writeLog from "../../serverFunctions/write-log.js";
+import postgresCRUD from "../../serverFunctions/postgress-CRUD-functions.js";
 
 const publicRouter = express.Router();
 

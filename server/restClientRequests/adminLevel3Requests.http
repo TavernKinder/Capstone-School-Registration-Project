@@ -1,0 +1,78 @@
+### Login to Level 3 Admin
+# @name adminLevel3Login
+POST http://localhost:3001/api/login/staff
+Content-Type: application/json
+
+{
+	"email": "maya.rivera@school.edu",
+	"password": "AdminPass1!"
+}
+
+### Get admin Level 1 route to check accesibility
+GET http://localhost:3001/api/admin/Level1
+Authorization: Bearer {{adminLevel3Login.response.body.token}}
+
+### Get admin Level 2 Route to check accesibility
+GET http://localhost:3001/api/admin/Level2
+Authorization: Bearer {{adminLevel3Login.response.body.token}}
+
+### Get admin Level 3 route to check accesibility
+GET http://localhost:3001/api/admin/Level3
+Authorization: Bearer {{adminLevel3Login.response.body.token}}
+
+### Get staff menbers
+GET http://localhost:3001/api/admin/Level3/staff
+Authorization: Bearer {{adminLevel3Login.response.body.token}}
+
+### Post new staff member
+# @name newStaffMember
+POST http://localhost:3001/api/admin/Level3/staff
+Authorization: Bearer {{adminLevel3Login.response.body.token}}
+Content-Type: application/json
+
+{
+	"username": "new.instructor",
+	"email": "new.instructor@school.edu",
+	"password": "Teach123!",
+	"phone_number": "555-0999",
+	"address": "99 Faculty Way, Springfield, ST 12345",
+	"access_level": 1,
+	"first_name": "New",
+	"middle_name": null,
+	"last_name": "Instructor",
+	"birth_date": "1990-01-01",
+	"position": "Instructor"
+}
+
+### Get newly created staff member by ID
+GET http://localhost:3001/api/admin/Level3/staff/id/{{newStaffMember.response.body.staff_id}}
+Authorization: Bearer {{adminLevel3Login.response.body.token}}
+
+### Update newly created staff member by ID
+PUT http://localhost:3001/api/admin/Level3/staff/id/{{newStaffMember.response.body.staff_id}}
+Authorization: Bearer {{adminLevel3Login.response.body.token}}
+Content-Type: application/json
+
+{
+	"phone_number": "555-0888",
+	"access_level": 2,
+	"position": "Senior Instructor"
+}
+
+### Delete newly created staff member by ID
+DELETE http://localhost:3001/api/admin/Level3/staff/id/{{newStaffMember.response.body.staff_id}}
+Authorization: Bearer {{adminLevel3Login.response.body.token}}
+
+### Run custom query to sql to see the last 10 blacklisted tokens
+POST http://localhost:3001/api/admin/Level3/sql
+Authorization: Bearer {{adminLevel3Login.response.body.token}}
+Content-Type: application/json
+
+{
+	"query": "SELECT token, blacklisted_at, expires_at FROM token_blacklist ORDER BY blacklisted_at DESC LIMIT 10",
+	"params": []
+}
+
+### Logout
+POST http://localhost:3001/api/logout
+Authorization: Bearer {{adminLevel3Login.response.body.token}}

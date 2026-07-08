@@ -1,7 +1,7 @@
 import express from "express";
-import postgresCRUD from "./postgress-CRUD-functions.js";
-import { sendJWTKey } from "./securityFunctions.js";
-import writeLog from "./write-log.js";
+import postgresCRUD from "../../serverFunctions/postgress-CRUD-functions.js";
+import { sendJWTKey } from "../../serverFunctions/securityFunctions.js";
+import writeLog from "../../serverFunctions/write-log.js";
 
 const loginRoutes = express.Router();
 

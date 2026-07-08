@@ -55,4 +55,58 @@ export async function blacklistToken(token) {
   writeLog(`Token blacklisted: ${token}`, "server.log");
 }
 
-export function checkStaffAccess() {}
+export function checkRole(role) {
+  return (req, res, next) => {
+    if (!req.auth) {
+      return res.status(401).json({ error: "Authentication is required" });
+    }
+
+    if (req.auth.role !== role) {
+      writeLog(
+        `Access denied for user_id=${req.auth.user_id}: role ${req.auth.role} is not allowed`,
+        "server.log",
+      );
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    return next();
+  };
+}
+
+export function authenticateStaffTokenAndLevel(accessLevel) {
+  return async (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice(7)
+      : undefined;
+    const result = await authenticateToken(token);
+
+    if (result.error) {
+      return res.status(401).json({ error: result.error });
+    }
+
+    req.auth = result.decoded;
+
+    return checkRole("staff")(req, res, () => {
+      const currentAccessLevel = Number(req.auth?.access_level);
+      const requiredAccessLevel = Number(accessLevel);
+
+      if (
+        !Number.isFinite(currentAccessLevel) ||
+        currentAccessLevel < requiredAccessLevel
+      ) {
+        writeLog(
+          `Access denied for user_id=${req.auth.user_id}: access level ${req.auth.access_level} is insufficient`,
+          "server.log",
+        );
+        return res.status(403).json({ error: "Access denied" });
+      }
+
+      return next();
+    });
+  };
+}
+
+
+
+

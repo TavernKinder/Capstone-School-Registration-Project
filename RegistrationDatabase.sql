@@ -5,8 +5,19 @@ CREATE TABLE IF NOT EXISTS courses(
     classroom_number VARCHAR(50),
     capacity INT,
     credit_hours INT,
-    tuition_cost DECIMAL(10,2)
+    tuition_cost DECIMAL(10,2),
+    signup_queue INT[] DEFAULT ARRAY[]::INT[],
+    manager_staff_id INT
 );
+
+
+UPDATE courses
+SET manager_staff_id = CASE
+    WHEN course_id IN ('CSCI-1001', 'CSCI-2001') THEN 2
+    WHEN course_id = 'ISYS-1002' THEN 3
+    ELSE 1
+END
+WHERE manager_staff_id IS NULL;
 
 CREATE TABLE IF NOT EXISTS students(
     student_id SERIAL PRIMARY KEY,
@@ -33,6 +44,8 @@ CREATE TABLE IF NOT EXISTS staff(
     address TEXT,
     access_level INT NOT NULL CHECK (access_level BETWEEN 0 AND 3),
     assigned_cohort_ids INT[],
+    assigned_cohorts INT[] DEFAULT ARRAY[]::INT[],
+    assigned_classes VARCHAR(20)[] DEFAULT ARRAY[]::VARCHAR(20)[],
     first_name VARCHAR(255) NOT NULL,
     middle_name VARCHAR(255),
     last_name VARCHAR(255) NOT NULL,
@@ -64,6 +77,11 @@ CREATE TABLE IF NOT EXISTS token_blacklist (
     blacklisted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP
 );
+
+INSERT INTO token_blacklist (token, expires_at) VALUES
+('sample_token_1', CURRENT_TIMESTAMP + INTERVAL '1 day'),
+('sample_token_2', CURRENT_TIMESTAMP + INTERVAL '1 day'),
+('sample_token_3', CURRENT_TIMESTAMP + INTERVAL '1 day')
 
 INSERT INTO courses (course_id, course_title, course_description, classroom_number, capacity, credit_hours, tuition_cost) VALUES
 ('CSCI-1001', 'Introduction to Computer Science', 'This course will introduce students to the fundamental concepts behind computers and computer programming. Topics covered include basic programming logic, algorithm development, computer architecture, and software engineering.', 'LAB-123', 30, 3, 900.00),

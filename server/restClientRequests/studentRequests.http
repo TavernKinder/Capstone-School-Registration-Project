@@ -42,7 +42,37 @@ Content-Type: application/json
 {
   "phone_number": "555-123-9000"
 }
+### Get list of available Courses
+GET http://localhost:3001/api/private/student/courses
+Authorization: Bearer {{studentLogin.response.body.token}}
 
+### Signup for Course
+POST http://localhost:3001/api/private/student/courses/CSCI-1001
+Authorization: Bearer {{studentLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "action" : "signup"
+}
+
+### Drop out of Course queue
+POST http://localhost:3001/api/private/student/courses/CSCI-1001
+Authorization: Bearer {{studentLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "action" : "drop"
+}
+### Get My Cohorts
+GET http://localhost:3001/api/private/student/cohorts
+Authorization: Bearer {{studentLogin.response.body.token}}
+
+### Get the details of a specific cohort the student is in
+GET http://localhost:3001/api/private/student/cohorts/1
+Authorization: Bearer {{studentLogin.response.body.token}}
+### Get the details of a specific cohort the student is not in
+GET http://localhost:3001/api/private/student/cohorts/3
+Authorization: Bearer {{studentLogin.response.body.token}}
 ### Logout
 POST http://localhost:3001/api/logout
 Authorization: Bearer {{studentLogin.response.body.token}}
