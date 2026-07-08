@@ -1,7 +1,7 @@
 import express from "express";
-import postgresCRUD from "../postgress-CRUD-functions.js";
-import { authenticateToken, checkRole } from "../securityFunctions.js";
-import writeLog from "../write-log.js";
+import postgresCRUD from "../../serverFunctions/postgress-CRUD-functions.js";
+import { authenticateToken, checkRole } from "../../serverFunctions/securityFunctions.js";
+import writeLog from "../../serverFunctions/write-log.js";
 
 const privateRoutes = express.Router();
 
@@ -156,12 +156,12 @@ privateRoutes.post("/my-info", async (req, res) => {
 privateRoutes.use(
   "/student",
   checkRole("student"),
-  (await import("./privateStudent.js")).default,
+  (await import("./privateRoutes/privateStudent.js")).default,
 );
 privateRoutes.use(
   "/staff",
   checkRole("staff"),
-  (await import("./privateStaff.js")).default,
+  (await import("./privateRoutes/privateStaff.js")).default,
 );
 
 export default privateRoutes;
